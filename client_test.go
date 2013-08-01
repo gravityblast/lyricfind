@@ -39,7 +39,7 @@ func TestBuildSearchUrl(t *testing.T) {
   params.Set("artist", "foo")
   params.Set("track", "bar")
   queryString := "apikey=XYZ&artist=foo&output=json&reqtype=default&searchtype=track&track=bar"
-  expectedUrl := fmt.Sprintf("%s?%s", BASE_URL, queryString)
+  expectedUrl := fmt.Sprintf("%s?%s", c.SearchUrl(), queryString)
   assert.Equal(t, expectedUrl, c.BuildSearchUrl(params))
 }
 
@@ -51,7 +51,9 @@ type FakeHttpClient struct {
 func (httpClient *FakeHttpClient) Get(url string) (*http.Response, error) {
   httpClient.getCount++
   httpClient.lastUrl = url
-  return nil, nil
+  response := &http.Response{}
+  /* response.Write(searchResponseBodyFixture) */
+  return response, nil
 }
 
 func TestGet(t *testing.T) {
@@ -98,6 +100,13 @@ var searchResponseBodyFixture = []byte(`{
     }
   ]
 }`)
+
+func TestSearchByArtistAndTrack(t *testing.T) {
+  /* fakeClient := &FakeHttpClient{} */
+  /* c := &client{ SearchApiKey: "XXX", httpClient: fakeClient } */
+  /* c.SearchByArtistAndTrack("foo", "bar") */
+  /* assert.Nil(t, err) */
+}
 
 func TestParseSearchResponseBody(t *testing.T) {
   c := client{}

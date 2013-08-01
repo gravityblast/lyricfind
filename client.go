@@ -5,6 +5,7 @@ import (
   "net/url"
   "net/http"
   "encoding/json"
+  "io/ioutil"
 )
 
 const BASE_URL = "http://test.lyricfind.com/api_service"
@@ -64,7 +65,7 @@ func (c client) MergeSearchRequestParams(params url.Values) url.Values {
 
 func (c client) BuildSearchUrl(params url.Values) string {
   params = c.MergeSearchRequestParams(params)
-  url := fmt.Sprintf("%s?%s", BASE_URL, params.Encode())
+  url := fmt.Sprintf("%s?%s", c.SearchUrl(), params.Encode())
   return url
 }
 
@@ -76,6 +77,24 @@ func (c client) ParseSearchResponseBody(body []byte) (SearchResponse, error) {
   response := SearchResponse{}
   err := json.Unmarshal(body, &response)
   return response, err
+}
+
+func (c client) SearchByArtistAndTrack(artist, track string) (SearchResponse, error) {
+  params := make(url.Values)
+  params.Set("artist", artist)
+  params.Set("track", track)
+  url := c.BuildSearchUrl(params)
+  resp, err := c.Get(url)
+  if err != nil {
+    return SearchResponse{}, err
+  }
+  defer resp.Body.Close()
+  body, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return SearchResponse{}, err
+  }
+  searchResponse, err := c.ParseSearchResponseBody(body)
+  return searchResponse, err
 }
 
 func NewClient() *client {
