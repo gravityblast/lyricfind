@@ -8,13 +8,13 @@ import (
 )
 
 func TestSearchUrl(t *testing.T) {
-  c := &client{ SearchApiKey: "XYZ" }
+  c := &Client{ SearchApiKey: "XYZ" }
   expectedUrl := "http://test.lyricfind.com/api_service/search.do"
   assert.Equal(t, expectedUrl, c.SearchUrl())
 }
 
 func TestMergeSearchRequestParams(t *testing.T) {
-  c := &client{ SearchApiKey: "XYZ" }
+  c := &Client{ SearchApiKey: "XYZ" }
   params := make(url.Values)
   params.Set("artist", "foo")
   params.Set("track", "bar")
@@ -24,7 +24,7 @@ func TestMergeSearchRequestParams(t *testing.T) {
 }
 
 func TestBuildSearchUrl(t *testing.T) {
-  c := &client{ SearchApiKey: "XYZ" }
+  c := &Client{ SearchApiKey: "XYZ" }
   params := make(url.Values)
   params.Set("artist", "foo")
   params.Set("track", "bar")
@@ -72,13 +72,13 @@ var searchResponseBodyFixture = []byte(`{
 
 /* func TestSearchByArtistAndTrack(t *testing.T) { */
 /*   fakeClient := &FakeHttpClient{} */
-/*   c := &client{ SearchApiKey: "XXX", httpClient: fakeClient } */
+/*   c := &Client{ SearchApiKey: "XXX", httpClient: fakeClient } */
 /*   _, err := c.SearchByArtistAndTrack("foo", "bar") */
 /*   assert.Nil(t, err) */
 /* } */
 
 func TestParseSearchResponseBody(t *testing.T) {
-  c := client{}
+  c := Client{}
   searchResponse, err := c.ParseSearchResponseBody(searchResponseBodyFixture)
   assert.Nil(t, err)
   assert.Equal(t, 100, searchResponse.Response.Code)
@@ -89,7 +89,7 @@ func TestParseSearchResponseBody(t *testing.T) {
 }
 
 func TestParseSearchResponseBody_TrackFields(t *testing.T) {
-  c := client{}
+  c := Client{}
   searchResponse, err := c.ParseSearchResponseBody(searchResponseBodyFixture)
   assert.Nil(t, err)
 

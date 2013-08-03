@@ -13,7 +13,7 @@ func TestNewClient(t *testing.T) {
 }
 
 func TestMergeDefaultRequestParams(t *testing.T) {
-  c := &client{ SearchApiKey: "XYZ" }
+  c := &Client{ SearchApiKey: "XYZ" }
   params := make(url.Values)
   params.Set("artist", "foo")
   expectedQueryString := "artist=foo&output=json"
@@ -35,7 +35,7 @@ func (httpClient *FakeHttpClient) Get(url string) (*http.Response, error) {
 
 func TestGet(t *testing.T) {
   fakeClient := &FakeHttpClient{}
-  c := &client{ httpClient: fakeClient }
+  c := &Client{ httpClient: fakeClient }
   c.Get("http://foo.bar")
   assert.Equal(t, 1, fakeClient.getCount)
   assert.Equal(t, "http://foo.bar", fakeClient.lastUrl)

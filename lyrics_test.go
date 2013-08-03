@@ -8,13 +8,13 @@ import (
 )
 
 func TestLyricsUrl(t *testing.T) {
-  c := &client{ SearchApiKey: "XYZ" }
+  c := &Client{ SearchApiKey: "XYZ" }
   expectedUrl := "http://test.lyricfind.com/api_service/lyric.do"
   assert.Equal(t, expectedUrl, c.LyricsUrl())
 }
 
 func TestMergeLyricsRequestParams(t *testing.T) {
-  c := &client{ SearchApiKey: "XXX", DisplayApiKey: "YYY" }
+  c := &Client{ SearchApiKey: "XXX", DisplayApiKey: "YYY" }
   params := make(url.Values)
   params.Set("trackid", "amg:1")
   params.Set("useragent", "mozilla")
@@ -24,7 +24,7 @@ func TestMergeLyricsRequestParams(t *testing.T) {
 }
 
 func TestBuildLyricsUrl(t *testing.T) {
-  c := &client{ SearchApiKey: "XXX", DisplayApiKey: "YYY" }
+  c := &Client{ SearchApiKey: "XXX", DisplayApiKey: "YYY" }
   params := make(url.Values)
   params.Set("trackid", "amg:1")
   queryString := "apikey=YYY&output=json&reqtype=default&trackid=amg%3A1"
@@ -55,13 +55,13 @@ var lyricsResponseBodyFixture = []byte(`{
 
 /* func TestGetLyrics(t *testing.T) { */
 /*   fakeClient := &FakeHttpClient{} */
-/*   c := &client{ SearchApiKey: "XXX", httpClient: fakeClient } */
+/*   c := &Client{ SearchApiKey: "XXX", httpClient: fakeClient } */
 /*   c.GetLyrics("amg:1") */
 /*   assert.Nil(t, err) */
 /* } */
 
 func TestParseLyricsResponseBody(t *testing.T) {
-  c := client{}
+  c := Client{}
   searchResponse, err := c.ParseLyricsResponseBody(lyricsResponseBodyFixture)
   assert.Nil(t, err)
   assert.Equal(t, 101, searchResponse.Response.Code)
