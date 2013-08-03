@@ -10,45 +10,28 @@ import (
 
 const BASE_URL = "http://test.lyricfind.com/api_service"
 
+type client struct {
+  SearchApiKey string
+  DisplayApiKey string
+  httpClient HttpClient
+}
+
+type ResponseError struct {
+  Code int
+  Description string
+  Message string
+}
+
 type HttpClient interface {
   Get(string) (*http.Response, error)
 }
 
-type client struct {
-  SearchApiKey string
-  httpClient HttpClient
-}
-
-type Artist struct {
-  Name string
-}
-
-type Track struct {
-  Amg int
-  Instrumental bool
-  Viewable bool
-  Has_lrc bool
-  Title string
-  Artist Artist
-  Snippet string
-  Last_update string
-  Score float64
-}
-
-type Response struct {
-  Code int
-  Description string
-}
-
-type SearchResponse struct {
-  Response Response
-  Totalresults int
-  Totalpages int
-  Tracks []Track
-}
-
 func (c client) SearchUrl() string {
   return fmt.Sprintf("%s/%s", BASE_URL, "search.do")
+}
+
+func (c client) LyricsUrl() string {
+  return fmt.Sprintf("%s/%s", BASE_URL, "lyric.do")
 }
 
 func (c client) MergeDefaultRequestParams(params url.Values) url.Values  {
@@ -63,9 +46,21 @@ func (c client) MergeSearchRequestParams(params url.Values) url.Values {
   return c.MergeDefaultRequestParams(params)
 }
 
+func (c client) MergeLyricsRequestParams(params url.Values) url.Values {
+  params.Set("reqtype", "default")
+  params.Set("apikey", c.DisplayApiKey)
+  return c.MergeDefaultRequestParams(params)
+}
+
 func (c client) BuildSearchUrl(params url.Values) string {
   params = c.MergeSearchRequestParams(params)
   url := fmt.Sprintf("%s?%s", c.SearchUrl(), params.Encode())
+  return url
+}
+
+func (c client) BuildLyricsUrl(params url.Values) string {
+  params = c.MergeLyricsRequestParams(params)
+  url := fmt.Sprintf("%s?%s", c.LyricsUrl(), params.Encode())
   return url
 }
 
@@ -79,12 +74,42 @@ func (c client) ParseSearchResponseBody(body []byte) (SearchResponse, error) {
   return response, err
 }
 
-type ResponseError struct {
-  ErrorMessage string
+func (c client) ParseLyricsResponseBody(body []byte) (LyricsResponse, error) {
+  response := LyricsResponse{}
+  err := json.Unmarshal(body, &response)
+  return response, err
 }
 
 func (responseError ResponseError) Error() string {
-  return responseError.ErrorMessage
+  return fmt.Sprintf("%v - %v - %v", responseError.Code, responseError.Description, responseError.Message)
+}
+
+func (c client) ReadSearchResponse(res *http.Response) (SearchResponse, error) {
+  defer res.Body.Close()
+  body, err := ioutil.ReadAll(res.Body)
+  if err != nil {
+    return SearchResponse{}, err
+  }
+  searchResponse, err := c.ParseSearchResponseBody(body)
+  if searchResponse.Response.Code != 100 {
+    err = ResponseError{searchResponse.Response.Code, searchResponse.Response.Description, searchResponse.Response.Message}
+  }
+
+  return searchResponse, err
+}
+
+func (c client) ReadLyricsResponse(res *http.Response) (LyricsResponse, error) {
+  defer res.Body.Close()
+  body, err := ioutil.ReadAll(res.Body)
+  if err != nil {
+    return LyricsResponse{}, err
+  }
+  lyricsResponse, err := c.ParseLyricsResponseBody(body)
+  if lyricsResponse.Response.Code < 101 || lyricsResponse.Response.Code > 111 {
+    err = ResponseError{lyricsResponse.Response.Code, lyricsResponse.Response.Description, lyricsResponse.Response.Message}
+  }
+
+  return lyricsResponse, err
 }
 
 func (c client) SearchByArtistAndTrack(artist, track string) (SearchResponse, error) {
@@ -92,21 +117,25 @@ func (c client) SearchByArtistAndTrack(artist, track string) (SearchResponse, er
   params.Set("artist", artist)
   params.Set("track", track)
   url := c.BuildSearchUrl(params)
-  resp, err := c.Get(url)
+  httpResponse, err := c.Get(url)
   if err != nil {
     return SearchResponse{}, err
-  }
-  defer resp.Body.Close()
-  body, err := ioutil.ReadAll(resp.Body)
-  if err != nil {
-    return SearchResponse{}, err
-  }
-  searchResponse, err := c.ParseSearchResponseBody(body)
-  if searchResponse.Response.Code != 100 {
-    err = ResponseError{searchResponse.Response.Description}
   }
 
-  return searchResponse, err
+  return c.ReadSearchResponse(httpResponse)
+}
+
+func (c client) GetLyrics(trackId string, userAgent string) (LyricsResponse, error) {
+  params := make(url.Values)
+  params.Set("trackid", trackId)
+  params.Set("useragent", userAgent)
+  url := c.BuildLyricsUrl(params)
+  httpResponse, err := c.Get(url)
+  if err != nil {
+    return LyricsResponse{}, err
+  }
+
+  return c.ReadLyricsResponse(httpResponse)
 }
 
 func NewClient() *client {
