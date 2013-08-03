@@ -83,7 +83,7 @@ var searchResponseBodyFixture = []byte(`{
       },
       "snippet": "snippet 1",
       "last_update": "2012-03-26 08:00:00",
-      "score": 18
+      "score": 18.9
     },
     {
       "amg": 2,
@@ -135,7 +135,7 @@ func TestParseSearchResponseBody_TrackFields(t *testing.T) {
   assert.Equal(t, "Artist 1", track.Artist.Name)
   assert.Equal(t, "snippet 1", track.Snippet)
   assert.Equal(t, "2012-03-26 08:00:00", track.Last_update)
-  assert.Equal(t, 18, track.Score)
+  assert.Equal(t, 18.9, track.Score)
 
   track = searchResponse.Tracks[1]
   assert.Equal(t, 2, track.Amg)
@@ -146,7 +146,7 @@ func TestParseSearchResponseBody_TrackFields(t *testing.T) {
   assert.Equal(t, "Artist 2", track.Artist.Name)
   assert.Equal(t, "snippet 2", track.Snippet)
   assert.Equal(t, "2012-04-26 08:00:00", track.Last_update)
-  assert.Equal(t, 15, track.Score)
+  assert.Equal(t, 15.0, track.Score)
 }
 
 func TestNewClient(t *testing.T) {

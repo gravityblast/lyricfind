@@ -32,7 +32,7 @@ type Track struct {
   Artist Artist
   Snippet string
   Last_update string
-  Score int
+  Score float64
 }
 
 type Response struct {
@@ -79,6 +79,14 @@ func (c client) ParseSearchResponseBody(body []byte) (SearchResponse, error) {
   return response, err
 }
 
+type ResponseError struct {
+  ErrorMessage string
+}
+
+func (responseError ResponseError) Error() string {
+  return responseError.ErrorMessage
+}
+
 func (c client) SearchByArtistAndTrack(artist, track string) (SearchResponse, error) {
   params := make(url.Values)
   params.Set("artist", artist)
@@ -94,6 +102,10 @@ func (c client) SearchByArtistAndTrack(artist, track string) (SearchResponse, er
     return SearchResponse{}, err
   }
   searchResponse, err := c.ParseSearchResponseBody(body)
+  if searchResponse.Response.Code != 100 {
+    err = ResponseError{searchResponse.Response.Description}
+  }
+
   return searchResponse, err
 }
 
