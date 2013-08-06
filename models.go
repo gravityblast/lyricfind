@@ -34,7 +34,5 @@ type SearchResponse struct {
 
 type LyricsResponse struct {
   Response Response
-  Totalresults int
-  Totalpages int
   Track Track
 }
