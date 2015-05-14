@@ -1,0 +1,40 @@
+{
+    "response": {
+        "code": 100,
+        "description": "SUCCESS"
+    },
+    "totalpages": 2,
+    "totalresults": 2,
+    "tracks": [
+        {
+            "amg": 1,
+            "artist": {
+                "name": "Artist 1"
+            },
+            "has_lrc": true,
+            "instrumental": false,
+            "last_update": "2014-06-23 13:37:27",
+            "lfid": "123-45678912",
+            "lrc_verified": true,
+            "score": 23.747576,
+            "snippet": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            "title": "Track 1",
+            "viewable": true
+        },
+        {
+            "amg": 2,
+            "artist": {
+                "name": "Artist 2"
+            },
+            "has_lrc": true,
+            "instrumental": false,
+            "last_update": "2014-06-23 13:37:27",
+            "lfid": "123-45678912",
+            "lrc_verified": true,
+            "score": 23.747576,
+            "snippet": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            "title": "Track 2",
+            "viewable": true
+        }
+    ]
+}

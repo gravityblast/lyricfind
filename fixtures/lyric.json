@@ -1,0 +1,23 @@
+{
+    "response": {
+        "code": 101,
+        "description": "SUCCESS: LICENSE, LYRICS"
+    },
+    "track": {
+        "amg": 1,
+        "artist": {
+            "name": "Artist Foo"
+        },
+        "copyright": "Copyright Foo",
+        "has_lrc": true,
+        "instrumental": false,
+        "last_update": "2014-07-24 08:18:10",
+        "lfid": "001-001",
+        "lrc_verified": true,
+        "lyrics": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua",
+        "title": "Lorem Ipsum",
+        "viewable": true,
+        "writer": "Cicero"
+    }
+}
+
